@@ -1,17 +1,69 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
   <title>Zeeshan — A Story So Far</title>
+  <script>
+    (function() {
+      try {
+        var theme = localStorage.getItem('theme');
+        if (theme === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      } catch (e) {}
+    })();
+  </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
+    :root, [data-theme="light"] {
+      color-scheme: light;
       --ink: #111; --ink-soft: #555; --ink-faint: #999;
       --bg: #f4f3f0;
+      --bg-grad-1: rgba(200,210,220,0.35);
+      --bg-grad-2: rgba(220,215,205,0.3);
       --glass-bg: rgba(255,255,255,0.45);
       --glass-border: rgba(255,255,255,0.7);
       --glass-shadow: rgba(0,0,0,0.06);
+      --glass-inset: rgba(255,255,255,0.8);
+      --tag-bg: rgba(0,0,0,0.055);
+      --tag-border: rgba(0,0,0,0.08);
+      --tag-color: #333;
+      --tl-line: rgba(0,0,0,0.15);
+      --tl-shadow: rgba(0,0,0,0.2);
+      --pill-bg: rgba(0,0,0,0.04);
+      --pill-border: rgba(0,0,0,0.07);
+      --pill-hover-bg: rgba(0,0,0,0.09);
+      --btn-bg: rgba(0,0,0,0.045);
+      --btn-border: rgba(0,0,0,0.09);
+      --btn-hover-bg: rgba(0,0,0,0.1);
+      --btn-hover-shadow: rgba(0,0,0,0.07);
+    }
+    [data-theme="dark"] {
+      color-scheme: dark;
+      --ink: #f0f2f5; --ink-soft: #a2a8b6; --ink-faint: #687182;
+      --bg: #0c0e12;
+      --bg-grad-1: rgba(30, 48, 72, 0.45);
+      --bg-grad-2: rgba(45, 35, 60, 0.4);
+      --glass-bg: rgba(22, 27, 36, 0.55);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --glass-shadow: rgba(0, 0, 0, 0.45);
+      --glass-inset: rgba(255, 255, 255, 0.08);
+      --tag-bg: rgba(255, 255, 255, 0.08);
+      --tag-border: rgba(255, 255, 255, 0.14);
+      --tag-color: #e2e8f0;
+      --tl-line: rgba(255, 255, 255, 0.16);
+      --tl-shadow: rgba(255, 255, 255, 0.25);
+      --pill-bg: rgba(255, 255, 255, 0.06);
+      --pill-border: rgba(255, 255, 255, 0.1);
+      --pill-hover-bg: rgba(255, 255, 255, 0.12);
+      --btn-bg: rgba(255, 255, 255, 0.07);
+      --btn-border: rgba(255, 255, 255, 0.12);
+      --btn-hover-bg: rgba(255, 255, 255, 0.14);
+      --btn-hover-shadow: rgba(0, 0, 0, 0.4);
     }
     html { scroll-behavior: smooth; }
     body {
@@ -22,8 +74,9 @@
       line-height: 1.6;
       overflow-x: hidden;
       background-image:
-        radial-gradient(ellipse at 20% 10%, rgba(200,210,220,0.35) 0%, transparent 55%),
-        radial-gradient(ellipse at 80% 80%, rgba(220,215,205,0.3) 0%, transparent 55%);
+        radial-gradient(ellipse at 20% 10%, var(--bg-grad-1) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 80%, var(--bg-grad-2) 0%, transparent 55%);
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
     .page { position: relative; max-width: 720px; margin: 0 auto; padding: 80px 24px 120px; }
     .glass {
@@ -32,8 +85,9 @@
       border-radius: 20px;
       backdrop-filter: blur(18px) saturate(160%);
       -webkit-backdrop-filter: blur(18px) saturate(160%);
-      box-shadow: 0 2px 0 rgba(255,255,255,0.8) inset, 0 8px 40px var(--glass-shadow), 0 1px 3px rgba(0,0,0,0.04);
+      box-shadow: 0 2px 0 var(--glass-inset) inset, 0 8px 40px var(--glass-shadow), 0 1px 3px rgba(0,0,0,0.04);
       animation: rise 0.55s cubic-bezier(0.22,1,0.36,1) both;
+      transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     }
     .glass:nth-child(2) { animation-delay: 0.08s; }
     .glass:nth-child(3) { animation-delay: 0.15s; }
@@ -46,31 +100,116 @@
     .hero-name span { color:var(--ink-soft); font-weight:300; }
     .hero-sub { font-size:16px; color:var(--ink-soft); margin-bottom:28px; }
     .hero-tags { display:flex; flex-wrap:wrap; gap:8px; }
-    .tag { padding:5px 13px; border-radius:999px; font-size:12.5px; font-weight:500; background:rgba(0,0,0,0.055); border:1px solid rgba(0,0,0,0.08); color:#333; }
+    .tag { padding:5px 13px; border-radius:999px; font-size:12.5px; font-weight:500; background:var(--tag-bg); border:1px solid var(--tag-border); color:var(--tag-color); transition:background-color .3s, border-color .3s, color .3s; }
     .section { padding:36px 48px; margin-bottom:16px; }
     .section-label { font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; margin-bottom:20px; }
     .timeline { position:relative; padding-left:28px; }
-    .timeline::before { content:''; position:absolute; left:7px; top:8px; bottom:8px; width:1px; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.15) 20%, rgba(0,0,0,0.15) 80%, transparent); }
+    .timeline::before { content:''; position:absolute; left:7px; top:8px; bottom:8px; width:1px; background: linear-gradient(to bottom, transparent, var(--tl-line) 20%, var(--tl-line) 80%, transparent); transition:background .3s; }
     .tl-item { position:relative; margin-bottom:26px; }
     .tl-item:last-child { margin-bottom:0; }
-    .tl-dot { position:absolute; left:-24px; top:6px; width:8px; height:8px; border-radius:50%; background:var(--ink); border:2px solid var(--bg); box-shadow:0 0 0 1px rgba(0,0,0,0.2); }
+    .tl-dot { position:absolute; left:-24px; top:6px; width:8px; height:8px; border-radius:50%; background:var(--ink); border:2px solid var(--bg); box-shadow:0 0 0 1px var(--tl-shadow); transition:background-color .3s, border-color .3s, box-shadow .3s; }
     .tl-year { font-size:11px; font-weight:600; letter-spacing:.06em; color:var(--ink-faint); margin-bottom:3px; }
     .tl-text { font-size:15px; line-height:1.55; }
     .tl-text strong { font-weight:600; }
     .skills-grid { display:flex; flex-wrap:wrap; gap:8px; }
-    .skill-pill { padding:7px 16px; border-radius:12px; background:rgba(0,0,0,0.04); border:1px solid rgba(0,0,0,0.07); font-size:13.5px; font-weight:500; transition:background .2s, transform .15s; cursor:default; }
-    .skill-pill:hover { background:rgba(0,0,0,0.09); transform:translateY(-1px); }
+    .skill-pill { padding:7px 16px; border-radius:12px; background:var(--pill-bg); border:1px solid var(--pill-border); font-size:13.5px; font-weight:500; transition:background-color .2s, border-color .2s, transform .15s; cursor:default; }
+    .skill-pill:hover { background:var(--pill-hover-bg); transform:translateY(-1px); }
     .about-text { font-size:15.5px; color:var(--ink-soft); line-height:1.75; }
     .about-text em { font-style:normal; color:var(--ink); font-weight:500; }
     .links-row { display:flex; flex-wrap:wrap; gap:12px; }
-    .link-btn { display:inline-flex; align-items:center; gap:7px; padding:10px 20px; border-radius:14px; background:rgba(0,0,0,0.045); border:1px solid rgba(0,0,0,0.09); font-size:13.5px; font-weight:500; color:var(--ink); text-decoration:none; transition:background .2s, transform .15s, box-shadow .2s; }
-    .link-btn:hover { background:rgba(0,0,0,0.1); transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,0.07); }
+    .link-btn { display:inline-flex; align-items:center; gap:7px; padding:10px 20px; border-radius:14px; background:var(--btn-bg); border:1px solid var(--btn-border); font-size:13.5px; font-weight:500; color:var(--ink); text-decoration:none; transition:background-color .2s, border-color .2s, color .2s, transform .15s, box-shadow .2s; }
+    .link-btn:hover { background:var(--btn-hover-bg); transform:translateY(-2px); box-shadow:0 6px 20px var(--btn-hover-shadow); }
     .link-btn svg { opacity:.6; flex-shrink:0; }
     .footer { text-align:center; margin-top:40px; font-size:12.5px; color:var(--ink-faint); }
-    @media(max-width:560px) { .hero,.section { padding-left:24px; padding-right:24px; } .hero { padding-top:36px; } }
+
+    /* Top-Right Theme Option */
+    .theme-switch-container {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 1000;
+      animation: rise 0.4s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    .theme-switch {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px;
+      border-radius: 999px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(18px) saturate(160%);
+      -webkit-backdrop-filter: blur(18px) saturate(160%);
+      box-shadow: 0 2px 0 var(--glass-inset) inset, 0 8px 30px var(--glass-shadow);
+      gap: 2px;
+      transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .theme-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 13px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--ink-soft);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .theme-btn:hover {
+      color: var(--ink);
+    }
+    .theme-btn[aria-pressed="true"] {
+      color: var(--ink);
+      background: var(--tag-bg);
+      border-color: var(--tag-border);
+      font-weight: 600;
+      box-shadow: 0 1px 4px var(--glass-shadow);
+    }
+    .theme-btn .theme-icon {
+      opacity: 0.75;
+      flex-shrink: 0;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+    .theme-btn[aria-pressed="true"] .theme-icon {
+      opacity: 1;
+      transform: scale(1.08);
+    }
+    @media(max-width:560px) {
+      .hero,.section { padding-left:24px; padding-right:24px; }
+      .hero { padding-top:36px; }
+      .theme-switch-container { top: 16px; right: 16px; }
+      .theme-btn { padding: 5px 10px; font-size: 12px; }
+    }
   </style>
 </head>
 <body>
+<div class="theme-switch-container">
+  <div class="theme-switch" role="group" aria-label="Theme selection">
+    <button type="button" class="theme-btn" id="theme-btn-light" aria-pressed="true" aria-label="Light theme">
+      <svg class="theme-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+      <span>Light</span>
+    </button>
+    <button type="button" class="theme-btn" id="theme-btn-dark" aria-pressed="false" aria-label="Dark theme">
+      <svg class="theme-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+      <span>Dark</span>
+    </button>
+  </div>
+</div>
 <div class="page">
   <div class="glass hero">
     <p class="hero-label">Born 2007 · Sindh, Pakistan</p>
@@ -125,5 +264,37 @@
   </div>
   <p class="footer">© 2026 Muhammad Zeeshan · Made from scratch</p>
 </div>
+<script>
+  (function() {
+    var lightBtn = document.getElementById('theme-btn-light');
+    var darkBtn = document.getElementById('theme-btn-dark');
+    var metaScheme = document.querySelector('meta[name="color-scheme"]');
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      try {
+        localStorage.setItem('theme', theme);
+      } catch (e) {}
+
+      if (metaScheme) {
+        metaScheme.setAttribute('content', theme);
+      }
+
+      if (theme === 'dark') {
+        lightBtn.setAttribute('aria-pressed', 'false');
+        darkBtn.setAttribute('aria-pressed', 'true');
+      } else {
+        lightBtn.setAttribute('aria-pressed', 'true');
+        darkBtn.setAttribute('aria-pressed', 'false');
+      }
+    }
+
+    var savedTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    applyTheme(savedTheme);
+
+    lightBtn.addEventListener('click', function() { applyTheme('light'); });
+    darkBtn.addEventListener('click', function() { applyTheme('dark'); });
+  })();
+</script>
 </body>
 </html>
